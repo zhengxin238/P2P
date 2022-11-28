@@ -42,9 +42,7 @@ class MainActivity : AppCompatActivity() {
                 Log.i("MainActivity", "LogMessage"+response.body())
                 val myStringBuilder = StringBuilder()
 
-                myStringBuilder.append(responseBody.responseOne)
-
-
+                myStringBuilder.append(responseBody.toString())
 
 
                 Log.i("MainActivity", "LogMessage: "+responseBody)
