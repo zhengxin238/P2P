@@ -9,6 +9,7 @@ import com.example.myapplication2.retrofit.RetrofitBuilder
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.example.myapplication2.StoreModel
 
 
 const val BASE_URL = "http://192.168.178.80:3002/"
@@ -18,7 +19,44 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        getSummaryObject()
+        //getSummaryObject()
+        storeFullSummary()
+    }
+
+    private fun storeFullSummary() {
+        val newStoreModel = StoreModel("Sixth App",333,"2022-03-03",99,"2022-03-02")
+
+
+        //make a retrofit builder object implements the ApiInterface so that we can call the function predefined in the ApiInterface
+        val retrofitBuilderObject = RetrofitBuilder.buildData(ApiInterface::class.java)
+
+        //create one more variable to get the data from the retrofit builder
+        val requestCall = retrofitBuilderObject.addSummary(newStoreModel)
+
+        requestCall.enqueue(object : Callback<MyDataResponse?> {
+            override fun onResponse(
+                call: Call<MyDataResponse?>,
+                response: Response<MyDataResponse?>
+            ) {
+                val responseBody = response.body()!!
+                Log.i("MainActivity", "LogMessage"+response.body())
+                val myStringBuilder = StringBuilder()
+
+                myStringBuilder.append(responseBody.responseOne)
+
+
+
+
+                Log.i("MainActivity", "LogMessage: "+responseBody)
+
+
+                findViewById<TextView>(R.id.txtId).text = myStringBuilder
+            }
+
+            override fun onFailure(call: Call<MyDataResponse?>, t: Throwable) {
+                Log.i("MainActivity", "ErrorMessage"+t.message)
+            }
+        })
     }
 
     private fun getSummaryObject() {
