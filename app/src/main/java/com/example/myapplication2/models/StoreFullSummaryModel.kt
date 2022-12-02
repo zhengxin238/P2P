@@ -1,6 +1,6 @@
-package com.example.myapplication2
+package com.example.myapplication2.models
 
-data class StoreModel(
+data class StoreFullSummaryModel(
 
     val appTitle: String,
     val averagePower: Int,
