@@ -33,6 +33,41 @@ class MainActivity : AppCompatActivity() {
        // getEntryObject() //works
 
         //storeFullEntry() //works
+
+        //showEntryBySummaryId() //works
+    }
+
+    private fun showEntryBySummaryId() {
+        val newSummaryId = SummaryID(1234554321)
+
+        //make a retrofit builder object implements the ApiInterface so that we can call the function predefined in the ApiInterface
+        val retrofitBuilderObject = RetrofitBuilder.buildData(ApiInterface::class.java)
+
+        //create one more variable to get the data from the retrofit builder
+        val requestCall = retrofitBuilderObject.showEntryBySummaryId(newSummaryId)
+        requestCall.enqueue(object : Callback<EntryResponse?> {
+            override fun onResponse(
+                call: Call<EntryResponse?>,
+                response: Response<EntryResponse?>
+            ) {
+                val responseBody = response.body()!!
+                Log.i("MainActivity", "LogMessage"+response.body())
+                val myStringBuilder = StringBuilder()
+
+                myStringBuilder.append(responseBody.responseTwo.size)
+                myStringBuilder.append("\n")
+                myStringBuilder.append(responseBody.responseTwo[0].summaryID)
+                myStringBuilder.append("\n")
+                myStringBuilder.append(responseBody.responseTwo[0].appInfo.title)
+                myStringBuilder.append("\n")
+
+                findViewById<TextView>(R.id.txtId).text = myStringBuilder
+            }
+
+            override fun onFailure(call: Call<EntryResponse?>, t: Throwable) {
+                Log.i("MainActivity", "ErrorMessage"+t.message)
+            }
+        })
     }
 
     private fun storeFullEntry() {
