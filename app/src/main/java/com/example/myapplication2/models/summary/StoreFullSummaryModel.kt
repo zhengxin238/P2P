@@ -1,8 +1,7 @@
-package com.example.myapplication2
+package com.example.myapplication2.models.summary
 
-data class ResponseItem(
-    val __v: Int,
-    val _id: String,
+data class StoreFullSummaryModel(
+
     val appTitle: String,
     val averagePower: Int,
     val endTime: String,

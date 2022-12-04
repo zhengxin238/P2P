@@ -4,8 +4,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
-import com.example.myapplication2.models.StoreFullSummaryModel
-import com.example.myapplication2.models.UpdateFullSummaryWithIDModel
+import com.example.myapplication2.models.entry.response.EntryResponse
+import com.example.myapplication2.models.entry.source.*
+import com.example.myapplication2.models.summary.SummaryResponse
+import com.example.myapplication2.models.summary.QuerySummaryDataWithAppTitleAndStartTimeModel
+import com.example.myapplication2.models.summary.StoreFullSummaryModel
+import com.example.myapplication2.models.summary.UpdateFullSummaryWithIDModel
 import com.example.myapplication2.retrofit.ApiInterface
 import com.example.myapplication2.retrofit.RetrofitBuilder
 import retrofit2.Call
@@ -25,6 +29,82 @@ class MainActivity : AppCompatActivity() {
        // storeFullSummary() //works
        // updateFullSummaryWithID() //works
        // querySummaryDataWithAppTitleAndStartTime() //works
+
+       // getEntryObject() //works
+
+        //storeFullEntry() //works
+    }
+
+    private fun storeFullEntry() {
+
+        val newStoreFullEntryModel = StoreFullEntryModel(
+            AppInfoOriginal("2022-01-01","FirstRandomApp"),
+            BatteryInfoOriginal(11,22,33,44,55,66,77,"2022-01-01"),
+            CpuInfoOriginal(11,22,33),
+            MemoryInfoOriginal(2.22,44,66),1234554321
+        )
+
+        //make a retrofit builder object implements the ApiInterface so that we can call the function predefined in the ApiInterface
+        val retrofitBuilderObject = RetrofitBuilder.buildData(ApiInterface::class.java)
+
+        //create one more variable to get the data from the retrofit builder
+        val requestCall = retrofitBuilderObject.addEntry(newStoreFullEntryModel)
+
+        requestCall.enqueue(object : Callback<String?> {
+            override fun onResponse(call: Call<String?>, response: Response<String?>) {
+                val responseBody = response.body()!!
+                Log.i("MainActivity", "LogMessage"+response.body())
+                val myStringBuilder = StringBuilder()
+
+                myStringBuilder.append(responseBody.toString())
+
+
+                Log.i("MainActivity", "LogMessage: "+responseBody)
+
+
+                findViewById<TextView>(R.id.txtId).text = myStringBuilder
+            }
+
+            override fun onFailure(call: Call<String?>, t: Throwable) {
+                Log.i("MainActivity", "ErrorMessage"+t.message)
+            }
+        })
+    }
+
+    private fun getEntryObject() {
+        //make a retrofit builder object implements the ApiInterface so that we can call the function predefined in the ApiInterface
+        val retrofitBuilderObject = RetrofitBuilder.buildData(ApiInterface::class.java)
+
+        //create one more variable to get the data from the retrofit builder
+        val requestCall = retrofitBuilderObject.getEntryData()
+
+        requestCall.enqueue(object : Callback<EntryResponse?> {
+            override fun onResponse(
+                call: Call<EntryResponse?>,
+                response: Response<EntryResponse?>
+            ) {
+                val responseBody = response.body()!!
+                Log.i("MainActivity", "LogMessage"+response.body())
+                val myStringBuilder = StringBuilder()
+
+                myStringBuilder.append(responseBody.responseTwo.size)
+                myStringBuilder.append("\n")
+                myStringBuilder.append(responseBody.responseTwo[0].summaryID)
+                myStringBuilder.append("\n")
+                myStringBuilder.append(responseBody.responseTwo[0].appInfo.title)
+                myStringBuilder.append("\n")
+
+
+
+
+
+                findViewById<TextView>(R.id.txtId).text = myStringBuilder
+            }
+
+            override fun onFailure(call: Call<EntryResponse?>, t: Throwable) {
+                Log.i("MainActivity", "ErrorMessage"+t.message)
+            }
+        })
     }
 
     private fun querySummaryDataWithAppTitleAndStartTime() {
@@ -36,10 +116,10 @@ class MainActivity : AppCompatActivity() {
         //create one more variable to get the data from the retrofit builder
         val requestCall = retrofitBuilderObject.querySummaryDataWithAppTItleAndStartTime(newQuerySummaryDataWithAppTitleAndStartTimeModel)
 
-        requestCall.enqueue(object : Callback<MyDataResponse?> {
+        requestCall.enqueue(object : Callback<SummaryResponse?> {
             override fun onResponse(
-                call: Call<MyDataResponse?>,
-                response: Response<MyDataResponse?>
+                call: Call<SummaryResponse?>,
+                response: Response<SummaryResponse?>
             ) {
                 val responseBody = response.body()!!
                 Log.i("MainActivity", "LogMessage"+response.body())
@@ -59,7 +139,7 @@ class MainActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.txtId).text = myStringBuilder
             }
 
-            override fun onFailure(call: Call<MyDataResponse?>, t: Throwable) {
+            override fun onFailure(call: Call<SummaryResponse?>, t: Throwable) {
                 Log.i("MainActivity", "ErrorMessage"+t.message)
             }
         })
@@ -77,10 +157,10 @@ class MainActivity : AppCompatActivity() {
         //create one more variable to get the data from the retrofit builder
         val requestCall = retrofitBuilderObject.updateFullSummaryWithID(newUpdateFullSummaryWithIDModel)
 
-        requestCall.enqueue(object : Callback<MyDataResponse?> {
+        requestCall.enqueue(object : Callback<SummaryResponse?> {
             override fun onResponse(
-                call: Call<MyDataResponse?>,
-                response: Response<MyDataResponse?>
+                call: Call<SummaryResponse?>,
+                response: Response<SummaryResponse?>
             ) {
                 val responseBody = response.body()!!
                 Log.i("MainActivity", "LogMessage"+response.body())
@@ -95,7 +175,7 @@ class MainActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.txtId).text = myStringBuilder
             }
 
-            override fun onFailure(call: Call<MyDataResponse?>, t: Throwable) {
+            override fun onFailure(call: Call<SummaryResponse?>, t: Throwable) {
                 Log.i("MainActivity", "ErrorMessage"+t.message)
             }
         })
@@ -111,10 +191,10 @@ class MainActivity : AppCompatActivity() {
         //create one more variable to get the data from the retrofit builder
         val requestCall = retrofitBuilderObject.addSummary(newStoreModel)
 
-        requestCall.enqueue(object : Callback<MyDataResponse?> {
+        requestCall.enqueue(object : Callback<SummaryResponse?> {
             override fun onResponse(
-                call: Call<MyDataResponse?>,
-                response: Response<MyDataResponse?>
+                call: Call<SummaryResponse?>,
+                response: Response<SummaryResponse?>
             ) {
                 val responseBody = response.body()!!
                 Log.i("MainActivity", "LogMessage"+response.body())
@@ -129,7 +209,7 @@ class MainActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.txtId).text = myStringBuilder
             }
 
-            override fun onFailure(call: Call<MyDataResponse?>, t: Throwable) {
+            override fun onFailure(call: Call<SummaryResponse?>, t: Throwable) {
                 Log.i("MainActivity", "ErrorMessage"+t.message)
             }
         })
@@ -141,12 +221,12 @@ class MainActivity : AppCompatActivity() {
         val retrofitBuilderObject = RetrofitBuilder.buildData(ApiInterface::class.java)
 
         //create one more variable to get the data from the retrofit builder
-        val requestCall = retrofitBuilderObject.getData()
+        val requestCall = retrofitBuilderObject.getSummaryData()
 
-        requestCall.enqueue(object : Callback<MyDataResponse?> {
+        requestCall.enqueue(object : Callback<SummaryResponse?> {
             override fun onResponse(
-                call: Call<MyDataResponse?>,
-                response: Response<MyDataResponse?>
+                call: Call<SummaryResponse?>,
+                response: Response<SummaryResponse?>
             ) {
                 val responseBody = response.body()!!
                 Log.i("MainActivity", "LogMessage"+response.body())
@@ -160,13 +240,11 @@ class MainActivity : AppCompatActivity() {
                 myStringBuilder.append("\n")
 
 
-                Log.i("MainActivity", "LogMessage: "+responseBody)
-
 
                 findViewById<TextView>(R.id.txtId).text = myStringBuilder
             }
 
-            override fun onFailure(call: Call<MyDataResponse?>, t: Throwable) {
+            override fun onFailure(call: Call<SummaryResponse?>, t: Throwable) {
                 Log.i("MainActivity", "ErrorMessage"+t.message)
             }
         })
