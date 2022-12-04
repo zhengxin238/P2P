@@ -25,16 +25,51 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         /*the following functions are tested on after another and con not be used at the same time*/
-        //getSummaryObject() // works
+
+       // getSummaryObject() // works
        // storeFullSummary() //works
        // updateFullSummaryWithID() //works
        // querySummaryDataWithAppTitleAndStartTime() //works
-
        // getEntryObject() //works
+       // storeFullEntry() //works
+       // showEntryBySummaryId() //works
 
-        //storeFullEntry() //works
+       // showEntryBetweenDate() //works
+    }
 
-        //showEntryBySummaryId() //works
+    private fun showEntryBetweenDate() {
+        val newDateModel = DateModel("2022-10-31","2022-10-30")
+
+        //make a retrofit builder object implements the ApiInterface so that we can call the function predefined in the ApiInterface
+        val retrofitBuilderObject = RetrofitBuilder.buildData(ApiInterface::class.java)
+
+        //create one more variable to get the data from the retrofit builder
+        val requestCall = retrofitBuilderObject.showEntryBetweenDate(newDateModel)
+
+        requestCall.enqueue(object : Callback<EntryResponse?> {
+            override fun onResponse(
+                call: Call<EntryResponse?>,
+                response: Response<EntryResponse?>
+            ) {
+                val responseBody = response.body()!!
+                Log.i("MainActivity", "LogMessage"+response.body())
+                val myStringBuilder = StringBuilder()
+
+                myStringBuilder.append(responseBody.responseTwo.size)
+                myStringBuilder.append("\n")
+                myStringBuilder.append(responseBody.responseTwo[0].summaryID)
+                myStringBuilder.append("\n")
+                myStringBuilder.append(responseBody.responseTwo[0].appInfo.title)
+                myStringBuilder.append("\n")
+
+                findViewById<TextView>(R.id.txtId).text = myStringBuilder
+            }
+
+            override fun onFailure(call: Call<EntryResponse?>, t: Throwable) {
+                Log.i("MainActivity", "ErrorMessage"+t.message)
+            }
+        })
+
     }
 
     private fun showEntryBySummaryId() {

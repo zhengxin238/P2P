@@ -1,6 +1,7 @@
 package com.example.myapplication2.retrofit
 
 import com.example.myapplication2.models.entry.response.EntryResponse
+import com.example.myapplication2.models.entry.source.DateModel
 import com.example.myapplication2.models.entry.source.StoreFullEntryModel
 import com.example.myapplication2.models.entry.source.SummaryID
 import com.example.myapplication2.models.summary.SummaryResponse
@@ -35,6 +36,8 @@ interface ApiInterface {
     fun addEntry(@Body newEntry: StoreFullEntryModel): Call<String>
     @POST("api/entry/showEntryBySummaryId")
     fun showEntryBySummaryId(@Body newSummaryID: SummaryID): Call<EntryResponse>
+    @POST("api/entry/showEntryBetweenDate")
+    fun  showEntryBetweenDate(@Body newDateModel:DateModel): Call<EntryResponse>
 
 
 }
