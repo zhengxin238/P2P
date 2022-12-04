@@ -34,4 +34,5 @@ interface ApiInterface {
     fun addEntry(@Body newEntry: StoreFullEntryModel): Call<String>
 
 
+
 }
